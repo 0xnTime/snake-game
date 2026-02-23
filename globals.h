@@ -1,3 +1,4 @@
 #define SCREEN_WIDTH 800
 #define SCREEN_HEIGHT 450
 #define FRUIT_RADIUS 5
+#define SNAKE_SIZE 15
