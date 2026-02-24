@@ -53,6 +53,17 @@ bool check_collision(fruit_t *fruit, snake_t *snake)
   return snake_fruit_collision;
 }
 
+void init_snake(snake_t *snake)
+{
+  
+  snake->posX = (float)SCREEN_WIDTH/2;
+  snake->posY = (float)SCREEN_HEIGHT/2;
+  snake->height = SNAKE_SIZE;
+  snake->width = SNAKE_SIZE;
+  snake->length = 1;
+}
+
+
 void increase_snake_length(snake_t *snake)
 {
     snake->length += 1;

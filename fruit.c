@@ -23,3 +23,9 @@ void spawn_random_fruit(fruit_t *fruit)
  
  
 }
+
+void init_fruit(fruit_t *fruit)
+{
+  fruit->posX = (float)SCREEN_WIDTH/3;
+  fruit->posY = (float)SCREEN_HEIGHT/3;
+}

@@ -6,3 +6,4 @@ typedef struct
 
 void draw_fruit(fruit_t *fruit);
 void spawn_random_fruit(fruit_t *fruit);
+void init_fruit(fruit_t *fruit);
