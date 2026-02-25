@@ -1,4 +1,4 @@
-#include "raylib.h"
+#include <raylib.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -23,9 +23,12 @@ int main(void)
     // Draw
     BeginDrawing();
       ClearBackground(RAYWHITE);
-      draw_snake(snake);
+      for(int i = 0;i < snake->length; i++) {
+        draw_snake(snake, snake->snake_position, snake->snake_size);
+      }
       update_snake_position(snake);
       draw_fruit(fruit);
+
       if(check_collision(fruit,snake)) {
         spawn_random_fruit(fruit);
         increase_snake_length(snake);
