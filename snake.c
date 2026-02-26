@@ -3,29 +3,37 @@
 #include "snake.h"
 #include "globals.h"
 
-void draw_snake(snake_t *snake, Vector2 snake_position, Vector2 snake_size)
+void draw_snake(snake_t *snake, Vector2 snake_size)
 {
-    DrawRectangleV(snake_position, snake_size, MAROON);
+  for(int i = 0; i < snake->length; i++)
+  {
+    Vector2 vec;
+
+    vec.x = snake->segments[i].x;
+    vec.y = snake->segments[i].y;
+
+    DrawRectangleV(vec, snake_size, MAROON);
+  }
 }
 
 void check_edges(snake_t *snake)
 {
   // If the player reach the end teleport to the bottom
   // or top of the screen
-  if (snake->snake_position.x > SCREEN_WIDTH) {
-    snake->snake_position.x = 0;
+  if (snake->segments[0].x > SCREEN_WIDTH) {
+    snake->segments[0].x = 0;
   }
 
-  if (snake->snake_position.x < 0) {
-    snake->snake_position.x = SCREEN_WIDTH;
+  if (snake->segments[0].x < 0) {
+    snake->segments[0].x = SCREEN_WIDTH;
   }
 
-  if (snake->snake_position.y > SCREEN_HEIGHT) {
-    snake->snake_position.y = 0;
+  if (snake->segments[0].y > SCREEN_HEIGHT) {
+    snake->segments[0].y = 0;
   }
 
-  if (snake->snake_position.y < 0) {
-    snake->snake_position.y = SCREEN_HEIGHT;
+  if (snake->segments[0].y < 0) {
+    snake->segments[0].y = SCREEN_HEIGHT;
   }
 
 }
@@ -33,23 +41,29 @@ void check_edges(snake_t *snake)
 void update_snake_position(snake_t *snake)
 {
   // Update player position
-
   check_edges(snake);
 
-  if (IsKeyDown(KEY_D))
-    snake->snake_position.x += 2.0f;
+  if (IsKeyDown(KEY_D)){
+    for(int i = snake->length; i >= 0; i--){
+      if(i == 0){
+        snake->segments[i].x += 2.0f;
+      }
+      snake->segments[i] = snake->segments[i - 1];
+    }
+  }
+
   if (IsKeyDown(KEY_A))
-    snake->snake_position.x -= 2.0f;
+    snake->segments[0].x -= 2.0f;
   if (IsKeyDown(KEY_S))
-    snake->snake_position.y += 2.0f;
+    snake->segments[0].y += 2.0f;
   if (IsKeyDown(KEY_W))
-    snake->snake_position.y -= 2.0f;
+    snake->segments[0].y -= 2.0f;
 }
 
 bool check_collision(fruit_t *fruit, snake_t *snake)
 {
   Vector2 center = {.x = fruit->posX, .y = fruit->posY};
-  Rectangle rec = { .x = snake->snake_position.x, .y = snake->snake_position.y,
+  Rectangle rec = { .x = snake->segments[0].x, .y = snake->segments[0].y,
     .width = snake->width, .height = snake->height};
 
   bool snake_fruit_collision = CheckCollisionCircleRec( center , FRUIT_RADIUS, rec);
@@ -62,8 +76,8 @@ void init_snake(snake_t *snake)
   snake->width = SNAKE_SIZE;
   snake->length = 1;
 
-  snake->snake_position.x = (float)SCREEN_WIDTH/2;
-  snake->snake_position.y = (float)SCREEN_HEIGHT/2;
+  snake->segments[0].x = (float)SCREEN_WIDTH/2;
+  snake->segments[0].y = (float)SCREEN_HEIGHT/2;
   snake->snake_size.x = 15;
   snake->snake_size.y = 15;
 

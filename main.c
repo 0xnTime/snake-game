@@ -23,9 +23,7 @@ int main(void)
     // Draw
     BeginDrawing();
       ClearBackground(RAYWHITE);
-      for(int i = 0;i < snake->length; i++) {
-        draw_snake(snake, snake->snake_position, snake->snake_size);
-      }
+      draw_snake(snake, snake->snake_size);
       update_snake_position(snake);
       draw_fruit(fruit);
 
