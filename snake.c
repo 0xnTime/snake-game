@@ -1,4 +1,5 @@
 #include <raylib.h>
+#include <stdio.h>
 
 #include "snake.h"
 #include "globals.h"
@@ -42,22 +43,32 @@ void update_snake_position(snake_t *snake)
 {
   // Update player position
   check_edges(snake);
+  static float time_passed = 0.0f;
+  float update_rate = 0.2f; 
 
-  if (IsKeyDown(KEY_D)){
-    for(int i = snake->length; i >= 0; i--){
-      if(i == 0){
-        snake->segments[i].x += 2.0f;
-      }
+ if (IsKeyDown(KEY_D))
+    snake->position = (Vector2){1,0};
+    // snake->segments[0].x += 20.0f;
+  if (IsKeyDown(KEY_A))
+    snake->position = (Vector2){-1,0};
+  if (IsKeyDown(KEY_S))
+    snake->position = (Vector2){0,1};
+  if (IsKeyDown(KEY_W))
+    snake->position = (Vector2){0,-1};
+
+  // Every frame...
+  time_passed += GetFrameTime();
+
+  if (time_passed >= update_rate) {
+    for (int i = snake->length - 1; i > 0; i--) {
       snake->segments[i] = snake->segments[i - 1];
     }
-  }
+    snake->segments[0].x += snake->position.x * 20.0f;
+    snake->segments[0].y += snake->position.y * 20.0f;
 
-  if (IsKeyDown(KEY_A))
-    snake->segments[0].x -= 2.0f;
-  if (IsKeyDown(KEY_S))
-    snake->segments[0].y += 2.0f;
-  if (IsKeyDown(KEY_W))
-    snake->segments[0].y -= 2.0f;
+    // Reset the timer
+    time_passed = 0.0f;
+  }
 }
 
 bool check_collision(fruit_t *fruit, snake_t *snake)
@@ -78,8 +89,8 @@ void init_snake(snake_t *snake)
 
   snake->segments[0].x = (float)SCREEN_WIDTH/2;
   snake->segments[0].y = (float)SCREEN_HEIGHT/2;
-  snake->snake_size.x = 15;
-  snake->snake_size.y = 15;
+  snake->snake_size.x = 20;
+  snake->snake_size.y = 20;
 
 }
 

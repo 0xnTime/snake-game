@@ -9,6 +9,7 @@ typedef struct
     int length;
 
     Vector2 segments[MAX_SNAKE_LENGTH];
+    Vector2 position;
     Vector2 snake_size;
 } snake_t;
 
