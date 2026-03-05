@@ -16,8 +16,19 @@ int main(void) {
 
   InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib [core] - snake game");
 
+  Rectangle restartButton = { (float)SCREEN_WIDTH/2 - 50, (float)SCREEN_HEIGHT/2 - 20, 100, 40 };
+
   while (!WindowShouldClose()) {
     // Draw
+    if(snake->is_dead == true){
+      DrawRectangleRec(restartButton, GRAY);
+      DrawText("RESTART", restartButton.x + 5, restartButton.y + 10, 20, BLACK);
+      if(CheckCollisionPointRec(GetMousePosition(), restartButton) && IsMouseButtonPressed(MOUSE_LEFT_BUTTON) == true){
+        snake->is_dead = false;
+        init_snake(snake);
+        spawn_random_fruit(fruit);
+      }
+    }
     BeginDrawing();
     ClearBackground(RAYWHITE);
     draw_snake(snake, snake->snake_size);

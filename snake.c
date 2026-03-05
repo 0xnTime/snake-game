@@ -9,15 +9,6 @@ void draw_snake(snake_t *snake, Vector2 snake_size)
   for(int i = 0; i < snake->length; i++)
   {
     float progress = snake->timer / snake->update_rate;
-    float dirX,dirY;
-
-    if(i == 0){
-      dirX = snake->position.x;
-      dirY = snake->position.y;
-    } else {
-      dirX = (snake->previous_segments[i-1].x - snake->segments[i].x) / 20.0f;
-      dirY = (snake->previous_segments[i-1].y - snake->segments[i].y) / 20.0f;
-    }
     
     float visualX = snake->previous_segments[i].x + (snake->segments[i].x - snake->previous_segments[i].x) * progress;
     float visualY = snake->previous_segments[i].y + (snake->segments[i].y - snake->previous_segments[i].y) * progress;
@@ -33,57 +24,77 @@ void draw_snake(snake_t *snake, Vector2 snake_size)
 
 void check_edges(snake_t *snake)
 {
-  // If the player reach the end teleport to the bottom
-  // or top of the screen
+
+
+
+  // If the player reach the end reset the game
   if (snake->segments[0].x > SCREEN_WIDTH) {
-    snake->segments[0].x = 0;
+    snake->is_dead = true;
   }
 
   if (snake->segments[0].x < 0) {
-    snake->segments[0].x = SCREEN_WIDTH;
+    snake->is_dead = true;
+
   }
 
   if (snake->segments[0].y > SCREEN_HEIGHT) {
-    snake->segments[0].y = 0;
+    snake->is_dead = true;
+
   }
 
   if (snake->segments[0].y < 0) {
-    snake->segments[0].y = SCREEN_HEIGHT;
+    snake->is_dead = true;
+
   }
 
 }
 
 void update_snake_position(snake_t *snake)
 {
-  // Update player position
-  check_edges(snake);
-  snake->timer += GetFrameTime();
-  snake->update_rate = 0.2f; 
+  if(snake->is_dead == false){
+    // Update player position
+    check_edges(snake);
+    snake->timer += GetFrameTime();
+    snake->update_rate = 0.2f; 
 
 
-  if (IsKeyDown(KEY_D))
-    snake->position = (Vector2){1,0};
-  if (IsKeyDown(KEY_A))
-    snake->position = (Vector2){-1,0};
-  if (IsKeyDown(KEY_S))
-    snake->position = (Vector2){0,1};
-  if (IsKeyDown(KEY_W))
-    snake->position = (Vector2){0,-1};
-
-
-  if (snake->timer >= snake->update_rate) {
-    for (int i = snake->length - 1; i >= 0; i--) {
-      snake->previous_segments[i] = snake->segments[i];
+    if (IsKeyDown(KEY_D) && snake->position.x != -1){
+      snake->position = (Vector2){1,0};
+    }
+    if (IsKeyDown(KEY_A) && snake->position.x != 1){
+      snake->position = (Vector2){-1,0};
+    }
+    if (IsKeyDown(KEY_S) && snake->position.y != -1){
+      snake->position = (Vector2){0,1};
+    }
+    if (IsKeyDown(KEY_W) && snake->position.y != 1){
+      snake->position = (Vector2){0,-1};   
     }
 
-    for (int i = snake->length - 1; i > 0; i--) {
-      snake->segments[i] = snake->segments[i - 1];
-    }
-    snake->segments[0].x += snake->position.x * 20.0f;
-    snake->segments[0].y += snake->position.y * 20.0f;
 
-    // Reset the timer
-    snake->timer = 0.0f;
+    if (snake->timer >= snake->update_rate) {
+
+      for (int i = snake->length - 1; i >= 0; i--) {
+        snake->previous_segments[i] = snake->segments[i];
+      }
+
+      for (int i = snake->length - 1; i > 0; i--) {
+        snake->segments[i] = snake->segments[i - 1];
+      }
+      snake->segments[0].x += snake->position.x * 20.0f;
+      snake->segments[0].y += snake->position.y * 20.0f;
+      if(snake->length != 1){
+        for(int i = 1; i < snake->length; i++){
+          if (snake->segments[0].x == snake->segments[i].x && snake->segments[0].y == snake->segments[i].y) {
+            snake->is_dead = true;
+          }
+        } 
+      }
+  
+
+      // Reset the timer
+      snake->timer = 0.0f;
+    }
   }
 }
 
@@ -107,6 +118,7 @@ void init_snake(snake_t *snake)
   snake->segments[0].y = (float)SCREEN_HEIGHT/2;
   snake->snake_size.x = 20;
   snake->snake_size.y = 20;
+  snake->is_dead = false;
 
 }
 
@@ -116,7 +128,7 @@ void increase_snake_length(snake_t *snake)
 
   snake->segments[new_segment] = snake->segments[new_segment - 1];
   snake->previous_segments[new_segment] = snake->segments[new_segment - 1];
-  
+
   snake->length++;
 
 }

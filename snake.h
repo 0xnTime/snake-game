@@ -9,6 +9,8 @@ typedef struct
     int length;
     float timer;
     float update_rate;
+    bool is_dead;
+    
     Vector2 previous_segments[MAX_SNAKE_LENGTH];
 
 
