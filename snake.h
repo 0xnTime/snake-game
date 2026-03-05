@@ -7,6 +7,10 @@ typedef struct
     int width;
     int height;
     int length;
+    float timer;
+    float update_rate;
+    Vector2 previous_segments[MAX_SNAKE_LENGTH];
+
 
     Vector2 segments[MAX_SNAKE_LENGTH];
     Vector2 position;

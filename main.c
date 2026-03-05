@@ -1,5 +1,4 @@
 #include <raylib.h>
-#include <stdio.h>
 #include <stdlib.h>
 
 #include "globals.h"
@@ -27,7 +26,6 @@ int main(void) {
     if (IsKeyPressed(KEY_C)) {
       spawn_random_fruit(fruit);
       increase_snake_length(snake);
-      printf("Snake Lenght: %i\n", snake->length);
     }
 
     if (check_collision(fruit, snake)) {
